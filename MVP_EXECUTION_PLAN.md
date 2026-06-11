@@ -23,37 +23,57 @@ Validar se profissionais pagam para receber pacientes qualificados.
 
 ## Roadmap operacional
 
+## Status atual (11/06/2026)
+
+- Fase atual: Semana 1 em finalizacao + inicio tecnico da Semana 2.
+- Backend e frontend limpos de modulos fora do escopo MVP.
+- Tracking de lead implementado antes do contato via WhatsApp.
+- Disclaimer legal de IA implementado nos principais pontos do fluxo.
+
+### Checklist consolidado do MVP
+
+- [x] Limpeza de escopo nao-MVP no codigo
+- [~] Fluxo principal completo (Triagem -> Recomendacao -> Clique -> WhatsApp)
+- [x] Disclaimer legal de IA nos pontos principais
+- [ ] Entidade/Tabela Triage dedicada
+- [x] Entidade/Tabela Lead
+- [~] Persistencia de tags da IA
+- [x] Persistencia de UTM/source/campaign (lead tracking)
+- [ ] Endpoint de metricas basicas
+- [ ] Revisao UX/responsividade da jornada principal
+- [ ] Dashboard simples com metricas de validacao
+
 ### Semana 1
-- Consolidar escopo no codigo (feito parcialmente nesta branch).
-- Garantir fluxo principal:
-  1) Triagem
-  2) Recomendacao
-  3) Clique em profissional
-  4) Contato por WhatsApp
-- Definir disclaimer legal em todos os pontos de IA.
+- [x] Consolidar escopo no codigo.
+- [~] Garantir fluxo principal:
+  - [~] Triagem
+  - [~] Recomendacao
+  - [x] Clique em profissional
+  - [x] Contato por WhatsApp
+- [x] Definir disclaimer legal em todos os pontos de IA.
 
 ### Semana 2
 - Implementar coleta de dados MVP:
-  - Entidade/Tabela `Triage`.
-  - Entidade/Tabela `Lead`.
-  - Persistir tags da IA.
-  - Persistir UTM/source/campaign.
-- Expor endpoint de metricas basicas.
+  - [ ] Entidade/Tabela `Triage`.
+  - [x] Entidade/Tabela `Lead`.
+  - [~] Persistir tags da IA.
+  - [x] Persistir UTM/source/campaign.
+- [ ] Expor endpoint de metricas basicas.
 
 ### Semana 3
-- Revisar UX da landing e jornada da triagem.
-- Revisar responsividade mobile/desktop do fluxo principal.
-- Preparar material comercial do Plano Fundador.
+- [ ] Revisar UX da landing e jornada da triagem.
+- [ ] Revisar responsividade mobile/desktop do fluxo principal.
+- [ ] Preparar material comercial do Plano Fundador.
 
 ### Semana 4
-- Onboarding manual dos primeiros profissionais.
-- Aprovacao manual no admin.
-- Rodar demos com rede local (Parana).
+- [ ] Onboarding manual dos primeiros profissionais.
+- [ ] Aprovacao manual no admin.
+- [ ] Rodar demos com rede local (Parana).
 
 ### Semanas 5-8
-- Aquisição de pacientes (conteudo + trafego pago leve).
-- Medir funil semanalmente.
-- Converter os primeiros pagantes.
+- [ ] Aquisição de pacientes (conteudo + trafego pago leve).
+- [ ] Medir funil semanalmente.
+- [ ] Converter os primeiros pagantes.
 
 ## Metricas obrigatorias (toda segunda)
 - Oferta:
