@@ -1,0 +1,96 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  API_IMAGE_NAME: ${{ github.repository_owner }}/brain-health-api
+  FRONTEND_IMAGE_NAME: ${{ github.repository_owner }}/brain-health-frontend
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set tag
+        id: meta
+        run: echo "tag=staging-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
+      - name: Login GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push API
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:${{ steps.meta.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:staging-latest
+
+      - name: Build and push Frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend-web
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ steps.meta.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:staging-latest
+          build-args: |
+            BUILD_CONFIGURATION=development
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy compose files to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.STAGING_SSH_HOST }}
+          username: ${{ secrets.STAGING_SSH_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          port: ${{ secrets.STAGING_SSH_PORT }}
+          source: "docker-compose.yml,docker-compose.staging.yml"
+          target: "${{ vars.STAGING_DEPLOY_PATH }}"
+
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.STAGING_SSH_HOST }}
+          username: ${{ secrets.STAGING_SSH_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          port: ${{ secrets.STAGING_SSH_PORT }}
+          script: |
+            set -e
+            cd "${{ vars.STAGING_DEPLOY_PATH }}"
+            echo "API_IMAGE=${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:${{ needs.build-and-push.outputs.tag }}" > .env.staging
+            echo "FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ needs.build-and-push.outputs.tag }}" >> .env.staging
+            echo "MYSQL_ROOT_PASSWORD=${{ secrets.STAGING_DB_ROOT_PASSWORD }}" >> .env.staging
+            echo "MYSQL_DATABASE=BrainHealthDb" >> .env.staging
+            echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY_STAGING }}" >> .env.staging
+            echo "OPENAI_MODEL=gpt-4o-mini" >> .env.staging
+            echo "CONNECTION_STRING=Server=db;Port=3306;Database=BrainHealthDb;User=root;Password=${{ secrets.STAGING_DB_ROOT_PASSWORD }};SslMode=None;AllowLoadLocalInfile=false;AllowPublicKeyRetrieval=true;" >> .env.staging
+            echo "ASPNETCORE_URLS=http://+:5000" >> .env.staging
+            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
+            docker compose --env-file .env.staging -f docker-compose.yml -f docker-compose.staging.yml pull api frontend
+            docker compose --env-file .env.staging -f docker-compose.yml -f docker-compose.staging.yml up -d --no-build
+            docker compose --env-file .env.staging -f docker-compose.yml -f docker-compose.staging.yml ps

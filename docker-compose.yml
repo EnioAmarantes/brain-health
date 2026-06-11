@@ -1,0 +1,53 @@
+services:
+  db:
+    image: mariadb:10.11
+    container_name: brainhealth-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-BrainHealthDb}
+    ports:
+      - "3326:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD:-password}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: ${API_IMAGE:-brain-health-api:local}
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: brainhealth-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5000
+      ConnectionStrings__DefaultConnection: ${CONNECTION_STRING:-Server=db;Port=3306;Database=BrainHealthDb;User=root;Password=password;SslMode=None;AllowLoadLocalInfile=false;AllowPublicKeyRetrieval=true;}
+      OpenAI__ApiKey: ${OPENAI_API_KEY:-}
+      OpenAI__Model: ${OPENAI_MODEL:-gpt-4o-mini}
+    ports:
+      - "5000:5000"
+
+  frontend:
+    image: ${FRONTEND_IMAGE:-brain-health-frontend:local}
+    build:
+      context: ./frontend-web
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONFIGURATION: development
+    container_name: brainhealth-frontend
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+
+volumes:
+  db_data:

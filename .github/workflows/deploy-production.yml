@@ -1,0 +1,96 @@
+name: Deploy Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  API_IMAGE_NAME: ${{ github.repository_owner }}/brain-health-api
+  FRONTEND_IMAGE_NAME: ${{ github.repository_owner }}/brain-health-frontend
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set tag
+        id: meta
+        run: echo "tag=production-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
+      - name: Login GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push API
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:${{ steps.meta.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:production-latest
+
+      - name: Build and push Frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend-web
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ steps.meta.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:production-latest
+          build-args: |
+            BUILD_CONFIGURATION=production
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy compose files to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.PROD_SSH_HOST }}
+          username: ${{ secrets.PROD_SSH_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          port: ${{ secrets.PROD_SSH_PORT }}
+          source: "docker-compose.yml,docker-compose.production.yml"
+          target: "${{ vars.PROD_DEPLOY_PATH }}"
+
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.PROD_SSH_HOST }}
+          username: ${{ secrets.PROD_SSH_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          port: ${{ secrets.PROD_SSH_PORT }}
+          script: |
+            set -e
+            cd "${{ vars.PROD_DEPLOY_PATH }}"
+            echo "API_IMAGE=${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:${{ needs.build-and-push.outputs.tag }}" > .env.production
+            echo "FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ needs.build-and-push.outputs.tag }}" >> .env.production
+            echo "MYSQL_ROOT_PASSWORD=${{ secrets.PROD_DB_ROOT_PASSWORD }}" >> .env.production
+            echo "MYSQL_DATABASE=BrainHealthDb" >> .env.production
+            echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY_PROD }}" >> .env.production
+            echo "OPENAI_MODEL=gpt-4o-mini" >> .env.production
+            echo "CONNECTION_STRING=Server=db;Port=3306;Database=BrainHealthDb;User=root;Password=${{ secrets.PROD_DB_ROOT_PASSWORD }};SslMode=None;AllowLoadLocalInfile=false;AllowPublicKeyRetrieval=true;" >> .env.production
+            echo "ASPNETCORE_URLS=http://+:5000" >> .env.production
+            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
+            docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.production.yml pull api frontend
+            docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.production.yml up -d --no-build
+            docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.production.yml ps

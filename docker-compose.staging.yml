@@ -1,0 +1,13 @@
+services:
+  api:
+    pull_policy: always
+    environment:
+      ASPNETCORE_ENVIRONMENT: Staging
+    restart: unless-stopped
+
+  frontend:
+    pull_policy: always
+    restart: unless-stopped
+
+  db:
+    restart: unless-stopped

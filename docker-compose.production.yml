@@ -1,0 +1,14 @@
+services:
+  api:
+    pull_policy: always
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    restart: unless-stopped
+
+  frontend:
+    pull_policy: always
+    restart: unless-stopped
+
+  db:
+    restart: unless-stopped
+    ports: []

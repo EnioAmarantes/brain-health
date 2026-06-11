@@ -1,0 +1,52 @@
+# IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build/Dist
+dist/
+build/
+out/
+
+# Logs
+*.log
+logs/
+
+# Dependencies cache
+.npm
+.eslintcache
+.cache/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# IDE
+.history/
+.vscode-server/
+
+# Project specific
+Financeiro/
+frontend-mobile/
+
+# Documentation (if not needed in repo)
+# *.md

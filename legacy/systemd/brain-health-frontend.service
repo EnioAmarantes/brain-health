@@ -1,0 +1,21 @@
+[Unit]
+Description=Brain Health Frontend Application (Angular)
+Documentation=https://meunegociosimples.net
+After=network.target
+Before=nginx.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/brainhealth/app/frontend-web
+
+# Verify permissions and prepare application
+ExecStart=/bin/bash -c 'chown -R www-data:www-data /var/www/brainhealth/app/frontend-web && chmod 755 /var/www/brainhealth/app/frontend-web && echo "Brain Health Frontend ready" '
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target nginx.service

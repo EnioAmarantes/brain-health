@@ -1,0 +1,16 @@
+{
+  "environments": {
+    "staging": {
+      "branch": "staging",
+      "build_config": "stg",
+      "deploy_path": "/var/www/brainhealth/app/frontend-web-stg",
+      "artifact_name": "staging-build"
+    },
+    "production": {
+      "branch": "main",
+      "build_config": "prod",
+      "deploy_path": "/var/www/brainhealth/app/frontend-web",
+      "artifact_name": "production-build"
+    }
+  }
+}
