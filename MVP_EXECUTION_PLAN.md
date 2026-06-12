@@ -23,7 +23,7 @@ Validar se profissionais pagam para receber pacientes qualificados.
 
 ## Roadmap operacional
 
-## Status atual (11/06/2026)
+## Status atual (12/06/2026)
 
 - Fase atual: Semana 1 em finalizacao + inicio tecnico da Semana 2.
 - Backend e frontend limpos de modulos fora do escopo MVP.
@@ -39,7 +39,7 @@ Validar se profissionais pagam para receber pacientes qualificados.
 - [x] Entidade/Tabela Lead
 - [~] Persistencia de tags da IA
 - [x] Persistencia de UTM/source/campaign (lead tracking)
-- [ ] Endpoint de metricas basicas
+- [x] Endpoint de metricas basicas
 - [ ] Revisao UX/responsividade da jornada principal
 - [ ] Dashboard simples com metricas de validacao
 
@@ -58,7 +58,7 @@ Validar se profissionais pagam para receber pacientes qualificados.
   - [x] Entidade/Tabela `Lead`.
   - [~] Persistir tags da IA.
   - [x] Persistir UTM/source/campaign.
-- [ ] Expor endpoint de metricas basicas.
+- [x] Expor endpoint de metricas basicas (`GET /api/metrics/mvp`).
 
 ### Semana 3
 - [ ] Revisar UX da landing e jornada da triagem.
