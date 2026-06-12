@@ -25,7 +25,7 @@ Validar se profissionais pagam para receber pacientes qualificados.
 
 ## Status atual (12/06/2026)
 
-- Fase atual: Semana 1 em finalizacao + inicio tecnico da Semana 2.
+- Fase atual: Semana 1 concluida + Semana 2 em execucao.
 - Backend e frontend limpos de modulos fora do escopo MVP.
 - Tracking de lead implementado antes do contato via WhatsApp.
 - Disclaimer legal de IA implementado nos principais pontos do fluxo.
@@ -33,11 +33,11 @@ Validar se profissionais pagam para receber pacientes qualificados.
 ### Checklist consolidado do MVP
 
 - [x] Limpeza de escopo nao-MVP no codigo
-- [~] Fluxo principal completo (Triagem -> Recomendacao -> Clique -> WhatsApp)
+- [x] Fluxo principal completo (Triagem -> Recomendacao -> Clique -> WhatsApp)
 - [x] Disclaimer legal de IA nos pontos principais
 - [x] Entidade/Tabela Triage dedicada
 - [x] Entidade/Tabela Lead
-- [~] Persistencia de tags da IA
+- [x] Persistencia de tags da IA
 - [x] Persistencia de UTM/source/campaign (lead tracking)
 - [x] Endpoint de metricas basicas
 - [ ] Revisao UX/responsividade da jornada principal
@@ -45,9 +45,9 @@ Validar se profissionais pagam para receber pacientes qualificados.
 
 ### Semana 1
 - [x] Consolidar escopo no codigo.
-- [~] Garantir fluxo principal:
-  - [~] Triagem
-  - [~] Recomendacao
+- [x] Garantir fluxo principal:
+  - [x] Triagem
+  - [x] Recomendacao
   - [x] Clique em profissional
   - [x] Contato por WhatsApp
 - [x] Definir disclaimer legal em todos os pontos de IA.
@@ -56,7 +56,7 @@ Validar se profissionais pagam para receber pacientes qualificados.
 - Implementar coleta de dados MVP:
   - [x] Entidade/Tabela `Triage`.
   - [x] Entidade/Tabela `Lead`.
-  - [~] Persistir tags da IA.
+  - [x] Persistir tags da IA.
   - [x] Persistir UTM/source/campaign.
 - [x] Expor endpoint de metricas basicas (`GET /api/metrics/mvp`).
 
