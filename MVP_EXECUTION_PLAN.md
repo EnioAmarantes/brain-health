@@ -35,7 +35,7 @@ Validar se profissionais pagam para receber pacientes qualificados.
 - [x] Limpeza de escopo nao-MVP no codigo
 - [~] Fluxo principal completo (Triagem -> Recomendacao -> Clique -> WhatsApp)
 - [x] Disclaimer legal de IA nos pontos principais
-- [ ] Entidade/Tabela Triage dedicada
+- [x] Entidade/Tabela Triage dedicada
 - [x] Entidade/Tabela Lead
 - [~] Persistencia de tags da IA
 - [x] Persistencia de UTM/source/campaign (lead tracking)
@@ -54,7 +54,7 @@ Validar se profissionais pagam para receber pacientes qualificados.
 
 ### Semana 2
 - Implementar coleta de dados MVP:
-  - [ ] Entidade/Tabela `Triage`.
+  - [x] Entidade/Tabela `Triage`.
   - [x] Entidade/Tabela `Lead`.
   - [~] Persistir tags da IA.
   - [x] Persistir UTM/source/campaign.
@@ -91,7 +91,7 @@ Validar se profissionais pagam para receber pacientes qualificados.
   - MRR
 
 ## Critério de sucesso (90 dias)
-- 5 profissionais pagantes.
+- 10 profissionais pagantes.
 - 1 clinica interessada em piloto.
 - R$ 500-1000 de receita recorrente inicial.
 
