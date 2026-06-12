@@ -25,10 +25,14 @@ Validar se profissionais pagam para receber pacientes qualificados.
 
 ## Status atual (12/06/2026)
 
-- Fase atual: Semana 1 concluida + Semana 2 em execucao.
+- Fase atual: Semana 1 e Semana 2 concluidas + Semana 3 em execucao.
 - Backend e frontend limpos de modulos fora do escopo MVP.
 - Tracking de lead implementado antes do contato via WhatsApp.
 - Disclaimer legal de IA implementado nos principais pontos do fluxo.
+- Dashboard de validacao conectado ao endpoint `GET /api/metrics/mvp` no frontend admin.
+- Revisao de UX e responsividade aplicada na jornada principal (entrada, triagem e listagem de profissionais).
+- Fluxo de aprovacao/ocultacao de profissionais implementado no admin (backend + frontend).
+- Landing page comercial de divulgacao do produto ainda nao implementada (fora do frontend do sistema).
 
 ### Checklist consolidado do MVP
 
@@ -40,8 +44,9 @@ Validar se profissionais pagam para receber pacientes qualificados.
 - [x] Persistencia de tags da IA
 - [x] Persistencia de UTM/source/campaign (lead tracking)
 - [x] Endpoint de metricas basicas
-- [ ] Revisao UX/responsividade da jornada principal
-- [ ] Dashboard simples com metricas de validacao
+- [x] Revisao UX/responsividade da jornada principal
+- [x] Dashboard simples com metricas de validacao
+- [x] Fluxo admin para aprovar/ocultar profissional
 
 ### Semana 1
 - [x] Consolidar escopo no codigo.
@@ -61,13 +66,13 @@ Validar se profissionais pagam para receber pacientes qualificados.
 - [x] Expor endpoint de metricas basicas (`GET /api/metrics/mvp`).
 
 ### Semana 3
-- [ ] Revisar UX da landing e jornada da triagem.
-- [ ] Revisar responsividade mobile/desktop do fluxo principal.
+- [ ] Construir landing page comercial de divulgacao (site institucional de aquisicao, separado do sistema).
+- [x] Revisar responsividade mobile/desktop do fluxo principal.
 - [ ] Preparar material comercial do Plano Fundador.
 
 ### Semana 4
 - [ ] Onboarding manual dos primeiros profissionais.
-- [ ] Aprovacao manual no admin.
+- [x] Aprovacao manual no admin (fluxo tecnico implementado no produto).
 - [ ] Rodar demos com rede local (Parana).
 
 ### Semanas 5-8
