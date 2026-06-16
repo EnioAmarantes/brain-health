@@ -30,7 +30,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:5000
       ConnectionStrings__DefaultConnection: ${CONNECTION_STRING:-Server=db;Port=3306;Database=BrainHealthDb;User=root;Password=password;SslMode=None;AllowLoadLocalInfile=false;AllowPublicKeyRetrieval=true;}
-      OpenAI__ApiKey: ${OPENAI_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OpenAI__Model: ${OPENAI_MODEL:-gpt-4o-mini}
     ports:
       - "5000:5000"
