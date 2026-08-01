@@ -179,20 +179,11 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  COALESCE(NULLIF(Gender, ''), 'nao_informado') AS genero,\n  COUNT(*) AS total\nFROM Leads\nWHERE $__timeFilter(CreatedAt)\nGROUP BY 1\nORDER BY total DESC;",
+          "rawSql": "SELECT\n  COALESCE(NULLIF(Gender, ''), 'nao_informado') AS metric,\n  COUNT(Id) AS value\nFROM Leads\nWHERE $__timeFilter(CreatedAt)\nGROUP BY 1\nORDER BY value DESC;",
           "refId": "A"
         }
       ],
       "title": "Distribuicao De Leads Por Genero",
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "total",
-            "renamePattern": "Total"
-          }
-        }
-      ],
       "type": "piechart"
     },
     {
@@ -254,7 +245,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT COUNT(*) AS total_leads\nFROM Leads\nWHERE $__timeFilter(CreatedAt);",
+          "rawSql": "SELECT COUNT(Id) AS total_leads\nFROM Leads\nWHERE $__timeFilter(CreatedAt);",
           "refId": "A"
         }
       ],
