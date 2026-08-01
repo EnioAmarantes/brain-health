@@ -1,0 +1,33 @@
+services:
+  api:
+    image: brain-health-api:development
+    pull_policy: never
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5000;https://+:5001
+      Kestrel__Endpoints__Http__Url: http://0.0.0.0:5000
+      Kestrel__Endpoints__Https__Url: https://0.0.0.0:5001
+      Kestrel__Certificates__Default__Path: /https/brainhealth-api.pfx
+      Kestrel__Certificates__Default__Password: ${ASPNETCORE_HTTPS_CERT_PASSWORD:-devcert123!}
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    volumes:
+      - ./backend/.certs:/https:ro
+    restart: unless-stopped
+
+  frontend:
+    image: brain-health-frontend:development
+    pull_policy: never
+    build:
+      context: ./frontend-web
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONFIGURATION: development
+    restart: unless-stopped
+
+  db:
+    restart: unless-stopped

@@ -6,7 +6,7 @@ Projeto focado em MVP para triagem com IA e encaminhamento para profissionais.
 
 ```
 brain-health/
-├── backend/                 # API .NET 8
+├── backend/                 # API .NET 10
 ├── frontend-web/            # Angular
 ├── docker-compose.yml       # Orquestra API + Frontend + MariaDB
 ├── docker-compose.staging.yml

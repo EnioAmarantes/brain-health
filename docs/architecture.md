@@ -4,7 +4,7 @@
 
 Tecnologias:
 
-- .NET 8
+- .NET 10
 - Entity Framework Core
 - MariaDB
 
