@@ -30,8 +30,15 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:5000
       ConnectionStrings__DefaultConnection: ${CONNECTION_STRING:-Server=db;Port=3306;Database=BrainHealthDb;User=root;Password=password;SslMode=None;AllowLoadLocalInfile=false;AllowPublicKeyRetrieval=true;}
+      AI__Provider: ${AI_PROVIDER:-auto}
+      AI__AutoFallbackToOpenAi: ${AI_AUTO_FALLBACK_TO_OPENAI:-false}
+      AI__RequestTimeoutSeconds: ${AI_REQUEST_TIMEOUT_SECONDS:-600}
+      Ollama__BaseUrl: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      Ollama__Model: ${OLLAMA_MODEL:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OpenAI__Model: ${OPENAI_MODEL:-gpt-4o-mini}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "5000:5000"
 
@@ -49,5 +56,26 @@ services:
     ports:
       - "8080:80"
 
+  grafana:
+    image: grafana/grafana:11.1.4
+    container_name: brainhealth-grafana
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin123}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-BrainHealthDb}
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+
 volumes:
   db_data:
+  grafana_data:
