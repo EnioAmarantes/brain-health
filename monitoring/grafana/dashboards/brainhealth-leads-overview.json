@@ -152,8 +152,7 @@
       "options": {
         "displayLabels": [
           "name",
-          "value",
-          "percent"
+          "value"
         ],
         "legend": {
           "displayMode": "list",
@@ -162,11 +161,10 @@
         },
         "pieType": "pie",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": [],
           "fields": "",
-          "values": false
+          "limit": 25,
+          "values": true
         },
         "tooltip": {
           "mode": "single",
@@ -290,8 +288,7 @@
       "options": {
         "displayLabels": [
           "name",
-          "value",
-          "percent"
+          "value"
         ],
         "legend": {
           "displayMode": "list",
@@ -300,11 +297,10 @@
         },
         "pieType": "pie",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": [],
           "fields": "",
-          "values": false
+          "limit": 25,
+          "values": true
         },
         "tooltip": {
           "mode": "single",
@@ -362,8 +358,7 @@
       "options": {
         "displayLabels": [
           "name",
-          "value",
-          "percent"
+          "value"
         ],
         "legend": {
           "displayMode": "list",
@@ -372,11 +367,10 @@
         },
         "pieType": "pie",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": [],
           "fields": "",
-          "values": false
+          "limit": 25,
+          "values": true
         },
         "tooltip": {
           "mode": "single",
@@ -434,8 +428,7 @@
       "options": {
         "displayLabels": [
           "name",
-          "value",
-          "percent"
+          "value"
         ],
         "legend": {
           "displayMode": "list",
@@ -444,11 +437,10 @@
         },
         "pieType": "pie",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": [],
           "fields": "",
-          "values": false
+          "limit": 25,
+          "values": true
         },
         "tooltip": {
           "mode": "single",
@@ -467,6 +459,98 @@
       ],
       "title": "Distribuicao De Leads Por Browser",
       "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "brainhealth-mariadb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 4,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "dataset": "BrainHealthDb",
+          "editorMode": "code",
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(CreatedAt, '1d'),\n  COALESCE(NULLIF(DeviceType, ''), 'nao_informado') AS metric,\n  COUNT(Id) AS value\nFROM Leads\nWHERE $__timeFilter(CreatedAt)\nGROUP BY 1, 2\nORDER BY 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Evolucao De Leads Por Device Type",
+      "type": "timeseries"
     }
   ],
   "refresh": "30s",
@@ -490,6 +574,6 @@
   "timezone": "",
   "title": "BrainHealth Leads Overview",
   "uid": "brainhealth-leads-overview",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
