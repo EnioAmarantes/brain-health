@@ -31,6 +31,25 @@ git submodule status
 git submodule update --init --recursive
 ```
 
+## Segredos e Variaveis de Ambiente
+
+**Nunca commite chaves ou senhas.** O repositorio nao contem mais segredos: a chave OpenAI e a senha do banco sao lidas exclusivamente de variaveis de ambiente.
+
+- Backend: `ConnectionStrings__DefaultConnection`, `OPENAI_API_KEY` (ou `OpenAI__ApiKey`), `Jwt__Key`. Nao ha mais credenciais em `appsettings.json`.
+- Banco: `MYSQL_ROOT_PASSWORD` (admin do container) e `MARIADB_USER`/`MARIADB_PASSWORD` (usuario de aplicacao, criado no primeiro init do volume). Em um volume ja existente, crie o usuario manualmente:
+
+  ```sql
+  CREATE USER IF NOT EXISTS 'brainhealth'@'%' IDENTIFIED BY '<senha>';
+  GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, DROP, REFERENCES ON BrainHealthDb.* TO 'brainhealth'@'%';
+  FLUSH PRIVILEGES;
+  ```
+
+  Alternativa destrutiva para desenvolvimento: `docker compose down -v` (apaga o volume) e subir novamente — o init recria tudo com o usuario de aplicacao.
+- Grafana: `GRAFANA_ADMIN_PASSWORD` e obrigatoria em staging/producao (o deploy falha sem ela). Em desenvolvimento local ha um default explicito apenas para dev (`dev-only-change-me`).
+- Staging/producao: secrets de deploy devem incluir `STAGING_GRAFANA_ADMIN_PASSWORD` e `PROD_GRAFANA_ADMIN_PASSWORD`. Opcionalmente `*_DB_APP_USER`/`*_DB_APP_PASSWORD` para o banco rodar com usuario nao-root (padrao: fallback para root enquanto nao forem definidos).
+
+Nota: volumes de desenvolvimento criados antes desta mudanca nao terao o usuario `brainhealth`; a connection string default (`docker-compose.yml`) passara a usá-lo.
+
 ## Subir com Docker
 
 Pre-requisito: Docker e Docker Compose.

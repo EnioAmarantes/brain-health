@@ -85,10 +85,13 @@ jobs:
             echo "API_IMAGE=${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:${{ needs.build-and-push.outputs.tag }}" > .env.production
             echo "FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ needs.build-and-push.outputs.tag }}" >> .env.production
             echo "MYSQL_ROOT_PASSWORD=${{ secrets.PROD_DB_ROOT_PASSWORD }}" >> .env.production
+            echo "MARIADB_USER=${{ secrets.PROD_DB_APP_USER }}" >> .env.production
+            echo "MARIADB_PASSWORD=${{ secrets.PROD_DB_APP_PASSWORD }}" >> .env.production
+            echo "GRAFANA_ADMIN_PASSWORD=${{ secrets.PROD_GRAFANA_ADMIN_PASSWORD }}" >> .env.production
             echo "MYSQL_DATABASE=BrainHealthDb" >> .env.production
             echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY_PROD }}" >> .env.production
             echo "OPENAI_MODEL=gpt-4o-mini" >> .env.production
-            echo "CONNECTION_STRING=Server=db;Port=3306;Database=BrainHealthDb;User=root;Password=${{ secrets.PROD_DB_ROOT_PASSWORD }};SslMode=None;AllowLoadLocalInfile=false;AllowPublicKeyRetrieval=true;" >> .env.production
+            echo "CONNECTION_STRING=Server=db;Port=3306;Database=BrainHealthDb;User=${{ secrets.PROD_DB_APP_USER || 'root' }};Password=${{ secrets.PROD_DB_APP_PASSWORD || secrets.PROD_DB_ROOT_PASSWORD }};SslMode=None;AllowLoadLocalInfile=false;AllowPublicKeyRetrieval=true;" >> .env.production
             echo "ASPNETCORE_URLS=http://+:5000" >> .env.production
             echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
             docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.production.yml pull api frontend

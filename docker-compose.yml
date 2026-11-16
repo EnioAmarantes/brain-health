@@ -6,6 +6,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-BrainHealthDb}
+      MARIADB_USER: ${MARIADB_USER:-brainhealth}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-brainhealth}
     ports:
       - "3326:3306"
     volumes:
@@ -29,7 +31,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:5000
-      ConnectionStrings__DefaultConnection: ${CONNECTION_STRING:-Server=db;Port=3306;Database=BrainHealthDb;User=root;Password=password;SslMode=None;AllowLoadLocalInfile=false;AllowPublicKeyRetrieval=true;}
+      ConnectionStrings__DefaultConnection: ${CONNECTION_STRING:-Server=db;Port=3306;Database=BrainHealthDb;User=brainhealth;Password=brainhealth;SslMode=None;AllowLoadLocalInfile=false;AllowPublicKeyRetrieval=true;}
       AI__Provider: ${AI_PROVIDER:-auto}
       AI__AutoFallbackToOpenAi: ${AI_AUTO_FALLBACK_TO_OPENAI:-false}
       AI__RequestTimeoutSeconds: ${AI_REQUEST_TIMEOUT_SECONDS:-600}
@@ -54,7 +56,7 @@ services:
     depends_on:
       - api
     ports:
-      - "8080:80"
+      - "8080:8080"
 
   grafana:
     image: grafana/grafana:11.1.4
@@ -65,7 +67,7 @@ services:
         condition: service_healthy
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin123}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-dev-only-change-me}
       GF_USERS_ALLOW_SIGN_UP: "false"
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-BrainHealthDb}

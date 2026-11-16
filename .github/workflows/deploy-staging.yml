@@ -85,10 +85,13 @@ jobs:
             echo "API_IMAGE=${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:${{ needs.build-and-push.outputs.tag }}" > .env.staging
             echo "FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ needs.build-and-push.outputs.tag }}" >> .env.staging
             echo "MYSQL_ROOT_PASSWORD=${{ secrets.STAGING_DB_ROOT_PASSWORD }}" >> .env.staging
+            echo "MARIADB_USER=${{ secrets.STAGING_DB_APP_USER }}" >> .env.staging
+            echo "MARIADB_PASSWORD=${{ secrets.STAGING_DB_APP_PASSWORD }}" >> .env.staging
+            echo "GRAFANA_ADMIN_PASSWORD=${{ secrets.STAGING_GRAFANA_ADMIN_PASSWORD }}" >> .env.staging
             echo "MYSQL_DATABASE=BrainHealthDb" >> .env.staging
             echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY_STAGING }}" >> .env.staging
             echo "OPENAI_MODEL=gpt-4o-mini" >> .env.staging
-            echo "CONNECTION_STRING=Server=db;Port=3306;Database=BrainHealthDb;User=root;Password=${{ secrets.STAGING_DB_ROOT_PASSWORD }};SslMode=None;AllowLoadLocalInfile=false;AllowPublicKeyRetrieval=true;" >> .env.staging
+            echo "CONNECTION_STRING=Server=db;Port=3306;Database=BrainHealthDb;User=${{ secrets.STAGING_DB_APP_USER || 'root' }};Password=${{ secrets.STAGING_DB_APP_PASSWORD || secrets.STAGING_DB_ROOT_PASSWORD }};SslMode=None;AllowLoadLocalInfile=false;AllowPublicKeyRetrieval=true;" >> .env.staging
             echo "ASPNETCORE_URLS=http://+:5000" >> .env.staging
             echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
             docker compose --env-file .env.staging -f docker-compose.yml -f docker-compose.staging.yml pull api frontend
